@@ -35,7 +35,7 @@ export class CubeD3MCPServer {
       chatBaseUrl: "https://ai-engineer.cubecloud.dev", // For chat API
       authBaseUrl: process.env.CUBE_AUTH_BASE_URL || `https://${process.env.CUBE_TENANT_NAME}.cubecloud.dev`, // For auth endpoints
       tenantName: process.env.CUBE_TENANT_NAME,
-      agentId: process.env.CUBE_AGENT_ID,
+      agentId: process.env.CUBE_AGENT_ID ? parseInt(process.env.CUBE_AGENT_ID, 10) : undefined, // Agent ID (must be a number)
       apiKey: process.env.CUBE_API_KEY, // API Key from Admin → Agents → API Key
       deploymentId: process.env.CUBE_DEPLOYMENT_ID ? parseInt(process.env.CUBE_DEPLOYMENT_ID, 10) : undefined, // Deployment ID for session generation (must be a number)
       externalId: process.env.USER_ID, // External user ID for session generation
