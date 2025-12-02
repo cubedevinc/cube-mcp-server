@@ -24,6 +24,7 @@ For Cursor and Claude Desktop, add this to your MCP settings:
       "env": {
         "CUBE_API_KEY": "your_api_key_here",
         "CUBE_TENANT_NAME": "your_tenant_name",
+        "CUBE_DEPLOYMENT_ID": "your_deployment_id",
         "CUBE_AGENT_ID": "your_agent_id",
         "USER_ID": "user@example.com"
       }
@@ -32,10 +33,11 @@ For Cursor and Claude Desktop, add this to your MCP settings:
 }
 ```
 
-#### Obtaining Credentials 
+#### Obtaining Credentials
 
 * CUBE_API_KEY - Navigate to **Admin -> Agent -> Click on Agent -> Enable API Key**.
 * CUBE_TENANT_NAME - Your tenant name from the URL, e.g. 'acme' in https://acme.cubecloud.dev
+* CUBE_DEPLOYMENT_ID - Your deployment ID from **Admin -> Settings**.
 * CUBE_AGENT_ID - Navigate to **Admin -> Agent -> Click on Agent** to find it.
 * USER_ID - A unique identifier for the user (e.g., email address or user ID) used for session generation and personalization.
 

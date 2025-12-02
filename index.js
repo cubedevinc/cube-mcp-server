@@ -35,8 +35,9 @@ export class CubeD3MCPServer {
       chatBaseUrl: "https://ai-engineer.cubecloud.dev", // For chat API
       authBaseUrl: process.env.CUBE_AUTH_BASE_URL || `https://${process.env.CUBE_TENANT_NAME}.cubecloud.dev`, // For auth endpoints
       tenantName: process.env.CUBE_TENANT_NAME,
-      agentId: process.env.CUBE_AGENT_ID,
+      agentId: process.env.CUBE_AGENT_ID ? parseInt(process.env.CUBE_AGENT_ID, 10) : undefined, // Agent ID (must be a number)
       apiKey: process.env.CUBE_API_KEY, // API Key from Admin → Agents → API Key
+      deploymentId: process.env.CUBE_DEPLOYMENT_ID ? parseInt(process.env.CUBE_DEPLOYMENT_ID, 10) : undefined, // Deployment ID for session generation (must be a number)
       externalId: process.env.USER_ID, // External user ID for session generation
     };
 
@@ -53,12 +54,17 @@ export class CubeD3MCPServer {
       throw new Error("Cube tenant name not configured. Set CUBE_TENANT_NAME environment variable.");
     }
 
+    if (!this.cubeConfig.deploymentId) {
+      throw new Error("Cube deployment ID not configured. Set CUBE_DEPLOYMENT_ID environment variable.");
+    }
+
     if (!externalId) {
       throw new Error("externalId is required for session generation.");
     }
 
     const url = `${this.cubeConfig.authBaseUrl}/api/v1/embed/generate-session`;
     const body = {
+      deploymentId: this.cubeConfig.deploymentId,
       externalId,
       ...(userAttributes.length > 0 && { userAttributes })
     };
@@ -86,15 +92,22 @@ export class CubeD3MCPServer {
       throw new Error("Session ID is required for token exchange.");
     }
 
+    if (!this.cubeConfig.deploymentId) {
+      throw new Error("Cube deployment ID not configured. Set CUBE_DEPLOYMENT_ID environment variable.");
+    }
+
     const url = `${this.cubeConfig.authBaseUrl}/api/v1/embed/session/token`;
-    
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Api-Key ${this.cubeConfig.apiKey}`,
       },
-      body: JSON.stringify({ sessionId }),
+      body: JSON.stringify({
+        deploymentId: this.cubeConfig.deploymentId,
+        sessionId
+      }),
     });
 
     if (!response.ok) {
@@ -288,7 +301,7 @@ export class CubeD3MCPServer {
               content: [
                 {
                   type: "text",
-                  text: `❌ Error calling Cube API: ${error.message}\n\nPlease ensure your environment variables are set:\n- CUBE_API_KEY: Your API key from Admin → Agents → API Key\n- CUBE_TENANT_NAME: Your tenant name (e.g., "acme")\n- CUBE_AGENT_ID: Your agent ID (e.g., "2")\n- USER_ID: External user ID for session generation (e.g., "user@example.com")\n- CUBE_AUTH_BASE_URL: (optional) Override auth base URL if different from https://{tenant}.cubecloud.dev`,
+                  text: `❌ Error calling Cube API: ${error.message}\n\nPlease ensure your environment variables are set:\n- CUBE_API_KEY: Your API key from Admin → Agents → API Key\n- CUBE_TENANT_NAME: Your tenant name (e.g., "acme")\n- CUBE_DEPLOYMENT_ID: Your deployment ID from Admin → Settings\n- CUBE_AGENT_ID: Your agent ID (e.g., "2")\n- USER_ID: External user ID for session generation (e.g., "user@example.com")\n- CUBE_AUTH_BASE_URL: (optional) Override auth base URL if different from https://{tenant}.cubecloud.dev`,
                 },
               ],
             };
