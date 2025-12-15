@@ -22,10 +22,8 @@ For Cursor and Claude Desktop, add this to your MCP settings:
       "command": "npx",
       "args": ["@cube-dev/mcp-server"],
       "env": {
+        "CUBE_CHAT_API_URL": "https://ai.{cloudRegion}.cubecloud.dev/api/v1/public/{accountName}/agents/{agentId}/chat/stream-chat-state",
         "CUBE_API_KEY": "your_api_key_here",
-        "CUBE_TENANT_NAME": "your_tenant_name",
-        "CUBE_DEPLOYMENT_ID": "your_deployment_id",
-        "CUBE_AGENT_ID": "your_agent_id",
         "USER_ID": "user@example.com"
       }
     }
@@ -35,11 +33,9 @@ For Cursor and Claude Desktop, add this to your MCP settings:
 
 #### Obtaining Credentials
 
-* CUBE_API_KEY - Navigate to **Admin -> Agent -> Click on Agent -> Enable API Key**.
-* CUBE_TENANT_NAME - Your tenant name from the URL, e.g. 'acme' in https://acme.cubecloud.dev
-* CUBE_DEPLOYMENT_ID - Your deployment ID from **Admin -> Settings**.
-* CUBE_AGENT_ID - Navigate to **Admin -> Agent -> Click on Agent** to find it.
-* USER_ID - A unique identifier for the user (e.g., email address or user ID) used for session generation and personalization.
+* CUBE_CHAT_API_URL - Copy the complete Chat API URL from **Admin → Agents → Click on Agent → Chat API URL field**. This is the full endpoint URL for your agent.
+* CUBE_API_KEY - Navigate to **Admin → Agents → Click on Agent → Enable API Key**.
+* USER_ID - A unique identifier for the user (e.g., email address or user ID) used for session settings and personalization.
 
 ## Cube Chat Examples
 
@@ -47,4 +43,6 @@ Ask questions like "Show me revenue trends" or "What are our top products?" to g
 
 ## Architecture
 
-Standard MCP server with tools, resources, and stdio transport. Integrates with Cube's streaming chat API using session-based authentication (API key → session → token) and supports user context through external IDs and user attributes. Built with `@modelcontextprotocol/sdk`.
+Standard MCP server with tools, resources, and stdio transport. Integrates with Cube's streaming chat API using API key authentication directly and supports user context through external IDs, email, user attributes, groups, and security context. Built with `@modelcontextprotocol/sdk`.
+
+The server uses the Chat API endpoint directly with API key authentication. The Chat API URL should be copied from your agent settings in the Cube admin panel.
