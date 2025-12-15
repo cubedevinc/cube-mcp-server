@@ -20,7 +20,7 @@ export class CubeD3MCPServer {
     this.server = new Server(
       {
         name: "@cube-dev/mcp-server",
-        version: "1.2.0",
+        version: "1.2.1",
       },
       {
         capabilities: {
@@ -98,7 +98,7 @@ export class CubeD3MCPServer {
         },
         serverInfo: {
           name: "@cube-dev/mcp-server",
-          version: "1.2.0",
+          version: "1.2.1",
         },
       };
     });
@@ -296,7 +296,7 @@ export class CubeD3MCPServer {
               {
                 uri,
                 mimeType: "text/plain",
-                                  text: "Cube MCP Server\\nVersion: 1.2.0\\nCreated for Cube.js enterprise examples\\n\\nThis server provides chat functionality for analytics and data exploration with Cube AI.",
+                                  text: "Cube MCP Server\\nVersion: 1.2.1\\nCreated for Cube.js enterprise examples\\n\\nThis server provides chat functionality for analytics and data exploration with Cube AI.",
               },
             ],
           };
@@ -309,7 +309,7 @@ export class CubeD3MCPServer {
                 mimeType: "application/json",
                 text: JSON.stringify({
                   serverName: "@cube-dev/mcp-server",
-                  version: "1.2.0",
+                  version: "1.2.1",
                   features: ["chat"],
                   description: "A Cube MCP server for analytics and data exploration",
                 }, null, 2),
