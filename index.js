@@ -194,9 +194,15 @@ export class CubeD3MCPServer {
                     const message = JSON.parse(line);
                     allMessages.push(message);
                     
-                    // Accumulate assistant content
-                    if (message.role === 'assistant' && message.content && !message.isDelta) {
-                      streamContent += message.content + '\n';
+                    // Accumulate assistant content (handle both delta and non-delta messages)
+                    if (message.role === 'assistant' && message.content) {
+                      if (message.isDelta) {
+                        // Delta messages are incremental updates
+                        streamContent += message.content;
+                      } else {
+                        // Non-delta messages are complete content
+                        streamContent += message.content + '\n';
+                      }
                     }
                     
                     // Add tool call information
@@ -220,8 +226,12 @@ export class CubeD3MCPServer {
               try {
                 const message = JSON.parse(buffer);
                 allMessages.push(message);
-                if (message.role === 'assistant' && message.content && !message.isDelta) {
-                  streamContent += message.content + '\n';
+                if (message.role === 'assistant' && message.content) {
+                  if (message.isDelta) {
+                    streamContent += message.content;
+                  } else {
+                    streamContent += message.content + '\n';
+                  }
                 }
               } catch (parseError) {
                 console.error('Failed to parse final message:', parseError);
