@@ -20,7 +20,7 @@ export class CubeD3MCPServer {
     this.server = new Server(
       {
         name: "@cube-dev/mcp-server",
-        version: "1.2.1",
+        version: "1.2.2",
       },
       {
         capabilities: {
@@ -98,7 +98,7 @@ export class CubeD3MCPServer {
         },
         serverInfo: {
           name: "@cube-dev/mcp-server",
-          version: "1.2.1",
+          version: "1.2.2",
         },
       };
     });
@@ -116,39 +116,6 @@ export class CubeD3MCPServer {
                 type: "string",
                 description: "Your question or request for the Cube AI agent (e.g., 'Show me revenue trends for the last 6 months')",
               },
-              chatId: {
-                type: "string",
-                description: "Unique chat session ID (optional, will be generated if not provided)",
-              },
-              externalId: {
-                type: "string",
-                description: "Unique identifier for the user (optional, falls back to USER_ID environment variable)",
-              },
-              groups: {
-                type: "array",
-                description: "Array of group names the user belongs to (optional)",
-                items: {
-                  type: "string",
-                },
-              },
-              userAttributes: {
-                type: "array",
-                description: "Array of user attributes for personalized responses and row-level security (optional)",
-                items: {
-                  type: "object",
-                  properties: {
-                    name: {
-                      type: "string",
-                      description: "Attribute name (must match an attribute configured in admin panel)",
-                    },
-                    value: {
-                      type: "string",
-                      description: "Attribute value (e.g., 'San Francisco', 'Engineering')",
-                    },
-                  },
-                  required: ["name", "value"],
-                },
-              },
             },
             required: ["message"],
           },
@@ -163,16 +130,12 @@ export class CubeD3MCPServer {
       switch (name) {
         case "chat":
           try {
-            const chatId = args.chatId || undefined; // Let API generate if not provided
-            const userAttributes = args.userAttributes || [];
-            const usedExternalId = args.externalId || this.cubeConfig.externalId;
-            
             const response = await this.streamCubeChat(
-              chatId,
+              undefined,
               args.message,
-              args.externalId,
-              userAttributes,
-              args.groups
+              undefined,
+              [],
+              undefined
             );
             
             let streamContent = "";
@@ -244,10 +207,6 @@ export class CubeD3MCPServer {
                   type: "text",
                   text: streamContent || "Chat completed with no visible content",
                 },
-                {
-                  type: "text",
-                  text: `\n\n📊 **Cube Chat Session Complete**\nChat ID: ${chatId}\nExternal ID: ${usedExternalId}\nUser Attributes: ${userAttributes.length > 0 ? JSON.stringify(userAttributes, null, 2) : 'None'}\nTotal messages processed: ${allMessages.length}`,
-                },
               ],
             };
             
@@ -309,7 +268,7 @@ export class CubeD3MCPServer {
                 mimeType: "application/json",
                 text: JSON.stringify({
                   serverName: "@cube-dev/mcp-server",
-                  version: "1.2.1",
+                  version: "1.2.2",
                   features: ["chat"],
                   description: "A Cube MCP server for analytics and data exploration",
                 }, null, 2),
