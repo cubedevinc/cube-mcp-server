@@ -15,7 +15,7 @@ This MCP server provides:
 
 For Cursor and Claude Desktop, add this to your MCP settings:
 
-#### For Internal Cube Cloud Users
+#### For Internal Cube Users
 
 ```json
 {
@@ -54,9 +54,9 @@ For Cursor and Claude Desktop, add this to your MCP settings:
 #### Obtaining Credentials
 
 * **CUBE_CHAT_API_URL** - Copy the complete Chat API URL from **Admin → Agents → Click on Agent → Chat API URL field**. This is the full endpoint URL for your agent.
-* **CUBE_API_KEY** - Navigate to **Admin → Agents → Click on Agent → Enable API Key**.
+* **CUBE_API_KEY** - Navigate to **Admin → API Keys** to obtain your API key.
 * **User Identity** (choose one):
-  * **INTERNAL_USER_ID** - Email address of an existing Cube Cloud user. Use this for internal team members who already have Cube Cloud accounts. The user's existing permissions and settings will be used.
+  * **INTERNAL_USER_ID** - Email address of an existing Cube user. Use this for internal team members who already have Cube accounts. The user's existing permissions and settings will be used.
   * **EXTERNAL_USER_ID** - A unique identifier for external/third-party users (e.g., "user-123", "customer@external.com"). Use this when you need to provide custom user attributes, groups, or row-level security settings.
 
 ## Cube Chat Examples
@@ -67,7 +67,7 @@ Ask questions like "Show me revenue trends" or "What are our top products?" to g
 
 Standard MCP server with tools, resources, and stdio transport. Integrates with Cube's streaming chat API using API key authentication and supports two types of user authentication:
 
-- **Internal Users**: Existing Cube Cloud users authenticated by their email address. They use their configured permissions and settings from Cube Cloud.
+- **Internal Users**: Existing Cube users authenticated by their email address. They use their configured permissions and settings from Cube.
 - **External Users**: Third-party users with custom identifiers, allowing for dynamic user attributes, groups, and row-level security configuration.
 
 Built with `@modelcontextprotocol/sdk`. The Chat API URL should be copied from your agent settings in the Cube admin panel.

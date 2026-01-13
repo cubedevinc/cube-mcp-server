@@ -58,7 +58,7 @@ export class CubeD3MCPServer {
 
     // Validate that exactly one ID is provided
     if (userExternalId && userInternalId) {
-      throw new Error("Cannot provide both externalId and internalId. Use externalId for external users or internalId for internal Cube Cloud users.");
+      throw new Error("Cannot provide both externalId and internalId. Use externalId for external users or internalId for internal Cube users.");
     }
 
     if (!userExternalId && !userInternalId) {
@@ -127,7 +127,7 @@ export class CubeD3MCPServer {
       tools: [
         {
           name: "chat",
-          description: "Chat with Cube AI agent for analytics and data exploration. Returns streaming response with AI insights, tool calls, and data visualizations. Supports both external users (with custom attributes) and internal Cube Cloud users (with existing permissions).",
+          description: "Chat with Cube AI agent for analytics and data exploration. Returns streaming response with AI insights, tool calls, and data visualizations. Supports both external users (with custom attributes) and internal Cube users (with existing permissions).",
           inputSchema: {
             type: "object",
             properties: {
@@ -141,7 +141,7 @@ export class CubeD3MCPServer {
               },
               internalId: {
                 type: "string",
-                description: "Optional: Internal user ID (email address) for existing Cube Cloud users. Uses their existing permissions. Cannot be used with externalId or userAttributes.",
+                description: "Optional: Internal user ID (email address) for existing Cube users. Uses their existing permissions. Cannot be used with externalId or userAttributes.",
               },
               userAttributes: {
                 type: "array",
@@ -260,7 +260,7 @@ export class CubeD3MCPServer {
               content: [
                 {
                   type: "text",
-                  text: `❌ Error calling Cube API: ${error.message}\n\nPlease ensure your environment variables are set:\n- CUBE_CHAT_API_URL: Full Chat API URL from Admin → Agents → Chat API URL field\n- CUBE_API_KEY: Your API key from Admin → Agents → API Key\n- EXTERNAL_USER_ID: External user ID for third-party users (e.g., "user-123") OR\n- INTERNAL_USER_ID: Internal user email for Cube Cloud users (e.g., "user@company.com")`,
+                  text: `❌ Error calling Cube API: ${error.message}\n\nPlease ensure your environment variables are set:\n- CUBE_CHAT_API_URL: Full Chat API URL from Admin → Agents → Chat API URL field\n- CUBE_API_KEY: Your API key from Admin → Agents → API Key\n- EXTERNAL_USER_ID: External user ID for third-party users (e.g., "user-123") OR\n- INTERNAL_USER_ID: Internal user email for Cube users (e.g., "user@company.com")`,
                 },
               ],
             };

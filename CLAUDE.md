@@ -32,7 +32,7 @@ The server uses a session-based authentication system with support for both exte
 - **API Key**: Long-lived credential from Cube admin panel (stored in `CUBE_API_KEY`)
 - **User Identity**: Either external user ID or internal user ID (email)
   - **External Users** (`externalId`): Third-party users with custom attributes, groups, and RLS settings
-  - **Internal Users** (`internalId`): Existing Cube Cloud users authenticated by email, using their configured permissions
+  - **Internal Users** (`internalId`): Existing Cube users authenticated by email, using their configured permissions
 - **Session Generation**: Creates a session with the appropriate user identity
 - **Chat Authorization**: Uses API key authentication to access the streaming chat API
 
@@ -44,7 +44,7 @@ Required configuration:
 
 User identity (one of these is required):
 - `EXTERNAL_USER_ID`: External user ID for third-party users (e.g., "user-123", "customer@external.com"). Allows custom userAttributes and groups for row-level security.
-- `INTERNAL_USER_ID`: Internal user email for existing Cube Cloud users (e.g., "analyst@company.com"). Uses the user's existing permissions in Cube Cloud.
+- `INTERNAL_USER_ID`: Internal user email for existing Cube users (e.g., "analyst@company.com"). Uses the user's existing permissions in Cube.
 
 ### Stream Processing
 
