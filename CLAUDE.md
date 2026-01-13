@@ -23,42 +23,28 @@ npm run dev
 **index.js** - The main MCP server implementation containing the `CubeD3MCPServer` class. This is a single-file application that handles:
 
 1. **MCP Protocol**: Built on `@modelcontextprotocol/sdk` with stdio transport
-2. **Authentication Flow**: Three-step authentication process:
-   - API key → Session ID (via `/api/v1/embed/generate-session`)
-   - Session ID → Bearer token (via `/api/v1/embed/session/token`)
-   - Bearer token → Chat API access
+2. **Authentication**: Direct API key authentication with session settings for user identity
 3. **Streaming Chat**: Processes newline-delimited JSON streaming responses from Cube's AI agent
 
 ### Authentication Architecture
 
-The server uses a session-based authentication system:
+The server uses a session-based authentication system with support for both external and internal users:
 - **API Key**: Long-lived credential from Cube admin panel (stored in `CUBE_API_KEY`)
-- **Deployment ID**: Identifies the specific deployment (stored in `CUBE_DEPLOYMENT_ID`)
-- **Session Generation**: Creates a session with deployment ID, external user ID, and optional user attributes for personalization/RLS
-- **Token Exchange**: Converts the session into a short-lived bearer token (also requires deployment ID)
-- **Chat Authorization**: Uses the bearer token to access the streaming chat API
+- **User Identity**: Either external user ID or internal user ID (email)
+  - **External Users** (`externalId`): Third-party users with custom attributes, groups, and RLS settings
+  - **Internal Users** (`internalId`): Existing Cube Cloud users authenticated by email, using their configured permissions
+- **Session Generation**: Creates a session with the appropriate user identity
+- **Chat Authorization**: Uses API key authentication to access the streaming chat API
 
 ### Environment Variables
 
 Required configuration:
+- `CUBE_CHAT_API_URL`: Full Chat API URL from Admin → Agents → Chat API URL field
 - `CUBE_API_KEY`: API key from Admin → Agents → API Key
-- `CUBE_TENANT_NAME`: Tenant name from URL (e.g., 'acme' in acme.cubecloud.dev)
-- `CUBE_DEPLOYMENT_ID`: Deployment ID from Admin → Settings
-- `CUBE_AGENT_ID`: Agent ID from Admin → Agents panel
-- `USER_ID`: External user ID for session generation (e.g., email or user ID)
 
-Optional:
-- `CUBE_AUTH_BASE_URL`: Override auth endpoint (defaults to https://{tenant}.cubecloud.dev)
-
-### API Endpoints
-
-**Chat Base URL**: `https://ai-engineer.cubecloud.dev` (hardcoded)
-**Auth Base URL**: `https://{tenant}.cubecloud.dev` (configurable via env)
-
-Key endpoints:
-- `POST /api/v1/embed/generate-session` - Generate session from API key
-- `POST /api/v1/embed/session/token` - Exchange session for token
-- `POST /api/v1/public/{tenant}/agents/{agentId}/chat/stream-chat-state` - Streaming chat
+User identity (one of these is required):
+- `EXTERNAL_USER_ID`: External user ID for third-party users (e.g., "user-123", "customer@external.com"). Allows custom userAttributes and groups for row-level security.
+- `INTERNAL_USER_ID`: Internal user email for existing Cube Cloud users (e.g., "analyst@company.com"). Uses the user's existing permissions in Cube Cloud.
 
 ### Stream Processing
 
@@ -79,8 +65,13 @@ The stream processor:
 
 **chat** - Primary tool for interacting with Cube AI agent
 - Required: `message` (user question/request)
-- Optional: `chatId` (generated if not provided), `externalId` (overrides USER_ID), `userAttributes` (array of {name, value} for RLS)
+- Optional parameters:
+  - `externalId`: External user ID (overrides EXTERNAL_USER_ID env var)
+  - `internalId`: Internal user email (overrides INTERNAL_USER_ID env var)
+  - `userAttributes`: Array of {name, value} for row-level security (only valid with externalId)
+  - `groups`: Array of group names for authorization (only valid with externalId)
 - Returns: Streaming response with AI insights, tool calls, and metadata
+- Note: Either `externalId` or `internalId` must be provided (via parameter or env var), but not both
 
 ### MCP Resources
 
